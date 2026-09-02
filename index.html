@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Task Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="topbar">
+    <div class="stamp" aria-hidden="true">
+      <span class="stamp-line">TASK</span>
+      <span class="stamp-line">LEDGER</span>
+    </div>
+
+    <div class="topbar-right">
+      <div class="api-status" id="apiStatus" title="Click to change API address">
+        <span class="dot" id="apiDot"></span>
+        <span id="apiLabel">checking API…</span>
+      </div>
+      <div class="user-badge hidden" id="userBadge">
+        <span id="userEmail"></span>
+        <button class="link-btn" id="logoutBtn">log out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============ API CONFIG STRIP ============ -->
+  <div class="api-config hidden" id="apiConfig">
+    <label for="apiBaseInput">API base URL</label>
+    <input id="apiBaseInput" type="text" placeholder="http://localhost:3000" />
+    <button class="btn btn-small" id="apiBaseSave">save</button>
+  </div>
+
+  <main id="mainArea">
+
+    <!-- ============ AUTH SCREEN ============ -->
+    <section id="authScreen" class="auth-screen">
+      <div class="ledger-card auth-card">
+
+        <div class="tabs">
+          <button class="tab active" data-tab="login">Log in</button>
+          <button class="tab" data-tab="register">Register</button>
+        </div>
+
+        <form id="loginForm" class="form-panel active">
+          <p class="form-note">Sign in to see your tasks.</p>
+          <label>Email
+            <input type="email" name="email" required autocomplete="username" />
+          </label>
+          <label>Password
+            <input type="password" name="password" required autocomplete="current-password" />
+          </label>
+          <button type="submit" class="btn btn-primary">Log in</button>
+          <p class="form-error" id="loginError"></p>
+        </form>
+
+        <form id="registerForm" class="form-panel">
+          <p class="form-note">New here? Create an account.</p>
+          <label>Email
+            <input type="email" name="email" required autocomplete="username" />
+          </label>
+          <label>Password
+            <input type="password" name="password" required autocomplete="new-password" minlength="8" />
+            <span class="hint">At least 8 characters.</span>
+          </label>
+          <button type="submit" class="btn btn-primary">Create account</button>
+          <p class="form-error" id="registerError"></p>
+          <p class="form-success" id="registerSuccess"></p>
+        </form>
+
+      </div>
+    </section>
+
+    <!-- ============ APP SCREEN ============ -->
+    <section id="appScreen" class="app-screen hidden">
+
+      <!-- Quick add ticket -->
+      <form id="newTaskForm" class="ticket-form">
+        <input type="text" name="title" placeholder="Write a new task…" required maxlength="255" />
+        <input type="text" name="description" placeholder="Details (optional)" />
+        <input type="date" name="due_date" />
+        <button type="submit" class="btn btn-primary">File it</button>
+      </form>
+      <p class="form-error" id="taskFormError"></p>
+
+      <!-- Trays -->
+      <div class="board">
+
+        <div class="tray" data-status="pending">
+          <div class="tray-head">
+            <h2>Pending</h2>
+            <span class="tray-count" id="count-pending">0</span>
+          </div>
+          <div class="tray-body" id="tray-pending"></div>
+        </div>
+
+        <div class="tray" data-status="in_progress">
+          <div class="tray-head">
+            <h2>In progress</h2>
+            <span class="tray-count" id="count-in_progress">0</span>
+          </div>
+          <div class="tray-body" id="tray-in_progress"></div>
+        </div>
+
+        <div class="tray" data-status="done">
+          <div class="tray-head">
+            <h2>Done</h2>
+            <span class="tray-count" id="count-done">0</span>
+          </div>
+          <div class="tray-body" id="tray-done"></div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============ EDIT MODAL ============ -->
+  <div class="modal-backdrop hidden" id="editBackdrop">
+    <div class="ledger-card modal-card">
+      <h3>Edit task</h3>
+      <form id="editForm">
+        <input type="hidden" name="id" />
+        <label>Title
+          <input type="text" name="title" required maxlength="255" />
+        </label>
+        <label>Description
+          <textarea name="description" rows="3"></textarea>
+        </label>
+        <div class="field-row">
+          <label>Status
+            <select name="status">
+              <option value="pending">Pending</option>
+              <option value="in_progress">In progress</option>
+              <option value="done">Done</option>
+            </select>
+          </label>
+          <label>Due date
+            <input type="date" name="due_date" />
+          </label>
+        </div>
+        <p class="form-error" id="editError"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-danger" id="deleteTaskBtn">Delete</button>
+          <div class="modal-actions-right">
+            <button type="button" class="btn btn-ghost" id="cancelEditBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
